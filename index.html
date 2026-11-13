@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NES Booking Website Proposal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Layout: one narrow reading column, sections stacked like a printed proposal, a sticky summary bar at the bottom. Single dark theme to match the client's black and gold brand. */
+:root {
+  --bg: #121110;
+  --surface: #1b1a18;
+  --raised: #24221f;
+  --line: #34312c;
+  --text: #ece7de;
+  --muted: #a39d92;
+  --gold: #c9a45c;
+  --gold-soft: rgba(201,164,92,0.12);
+  --ok: #7fb38a;
+  --display: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  --body: "Manrope", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--body);
+  font-size: 16px;
+  line-height: 1.6;
+}
+.wrap { max-width: 720px; margin: 0 auto; padding: 0 20px 56px; }
+header { padding: 48px 0 28px; border-bottom: 1px solid var(--line); }
+.eyebrow { font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); font-weight: 600; margin: 0 0 12px; }
+h1, h2, h3 { font-family: var(--display); font-weight: 600; text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(34px, 7vw, 48px); line-height: 1.08; }
+h2 { font-size: 28px; line-height: 1.2; margin-bottom: 14px; }
+h3 { font-size: 21px; line-height: 1.25; }
+.lede { color: var(--muted); max-width: 60ch; margin: 16px 0 0; }
+.motto { margin-top: 22px; padding: 14px 16px; border-left: 2px solid var(--gold); background: var(--gold-soft); font-family: var(--display); font-size: 21px; font-style: italic; line-height: 1.35; }
+section { padding: 36px 0; border-bottom: 1px solid var(--line); }
+.num { font-family: var(--display); color: var(--gold); font-size: 15px; letter-spacing: 0.1em; margin-bottom: 4px; display: block; }
+p { margin: 0 0 12px; max-width: 65ch; }
+.muted { color: var(--muted); }
+ul.clean { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
+ul.clean li { display: grid; grid-template-columns: 22px 1fr; gap: 8px; }
+ul.clean li::before { content: ""; width: 7px; height: 7px; margin-top: 10px; background: var(--gold); transform: rotate(45deg); }
+ul.clean.out li::before { background: none; border: 1px solid var(--muted); }
+.price { font-family: var(--display); font-size: 52px; font-weight: 700; line-height: 1; color: var(--gold); font-variant-numeric: tabular-nums; margin: 4px 0 6px; }
+.rows { display: grid; gap: 0; margin-top: 18px; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.row { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: start; gap: 6px 16px; padding: 12px 16px; background: var(--surface); }
+.row + .row { border-top: 1px solid var(--line); }
+.row span { overflow-wrap: anywhere; }
+.row b { font-variant-numeric: tabular-nums; font-weight: 600; text-align: right; }
+@media (max-width: 560px) {
+  .row { grid-template-columns: minmax(0, 1fr); }
+  .row b { text-align: left; color: var(--gold); }
+}
+.weeks { display: grid; gap: 10px; margin-top: 16px; }
+.week { display: grid; grid-template-columns: 76px 1fr; gap: 12px; padding: 12px 16px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
+.week span { color: var(--gold); font-weight: 600; font-size: 14px; }
+.choices { display: grid; gap: 12px; margin-top: 16px; }
+.choice { position: relative; display: block; padding: 16px 16px 16px 50px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; cursor: pointer; transition: border-color .15s, background .15s; }
+.choice:hover { border-color: #5a5348; }
+.choice > input[type=radio] { position: absolute; left: 18px; top: 20px; width: 18px; height: 18px; accent-color: var(--gold); margin: 0; }
+.choice:has(input:checked) { border-color: var(--gold); background: var(--raised); }
+.choice .top { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 12px; }
+.choice .cost { font-weight: 700; color: var(--gold); font-variant-numeric: tabular-nums; }
+.pill { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #121110; background: var(--gold); padding: 2px 8px; border-radius: 99px; margin-left: 6px; vertical-align: 2px; }
+.choice ul { margin: 8px 0 0; padding-left: 18px; color: var(--muted); font-size: 15px; }
+.choice ul li { margin: 2px 0; }
+.choice .note { margin-top: 8px; font-size: 14px; color: var(--muted); }
+.inline-input { margin-top: 10px; display: none; }
+.choice:has(input:checked) .inline-input { display: block; }
+label.q { display: block; font-weight: 600; margin-bottom: 6px; }
+.field { display: grid; gap: 4px; margin-top: 18px; }
+.hint { font-size: 14px; color: var(--muted); }
+input[type=text], input[type=number], textarea {
+  width: 100%; font: inherit; color: var(--text); background: var(--surface);
+  border: 1px solid var(--line); border-radius: 10px; padding: 11px 13px;
+}
+textarea { min-height: 84px; resize: vertical; }
+input:focus-visible, textarea:focus-visible, button:focus-visible, a:focus-visible, .choice:focus-within { outline: 2px solid var(--gold); outline-offset: 2px; }
+.radio-line { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+.radio-line label { display: inline-flex; align-items: center; gap: 8px; padding: 9px 14px; border: 1px solid var(--line); border-radius: 99px; background: var(--surface); cursor: pointer; font-size: 15px; }
+.radio-line label:has(input:checked) { border-color: var(--gold); background: var(--raised); }
+.radio-line input { accent-color: var(--gold); margin: 0; }
+.sub { margin-top: 8px; display: none; }
+.sub.show { display: block; }
+.bar { position: fixed; left: 0; right: 0; bottom: 0; background: rgba(18,17,16,0.96); border-top: 1px solid var(--line); backdrop-filter: blur(6px); padding: 12px 20px calc(12px + env(safe-area-inset-bottom)); }
+.bar-in { max-width: 720px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.totals { font-size: 14px; color: var(--muted); line-height: 1.4; }
+.totals b { color: var(--text); font-variant-numeric: tabular-nums; font-size: 16px; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; font: inherit; font-weight: 700; color: #121110; background: var(--gold); border: 0; border-radius: 10px; padding: 12px 18px; text-decoration: none; cursor: pointer; }
+.btn:hover { filter: brightness(1.08); }
+.btn.ghost { background: transparent; color: var(--gold); border: 1px solid var(--gold); }
+.send-box { margin-top: 22px; padding: 18px; border: 1px solid var(--gold); border-radius: 12px; background: var(--gold-soft); display: grid; gap: 12px; }
+.send-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.copied { color: var(--ok); font-size: 14px; min-height: 1.4em; }
+footer { padding: 28px 0 0; color: var(--muted); font-size: 14px; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <p class="eyebrow">Website proposal</p>
+  <h1>A booking website for NES Luxury Apartments</h1>
+  <p class="lede">Guests choose an apartment, pick their dates, and pay online in one place. You see every booking from a simple dashboard. Read through, make your choices, answer a few questions, and send everything back on WhatsApp.</p>
+</header>
+
+<section>
+  <span class="num">01</span>
+  <h2>What you get</h2>
+  <ul class="clean">
+    <li><span><strong>Apartment pages</strong> with photos, descriptions, amenities and nightly prices for each of your Jahi apartments.</span></li>
+    <li><span><strong>Live availability calendar</strong> so guests only see dates that are free. Once a booking is paid, those dates are blocked automatically, so there are no double bookings.</span></li>
+    <li><span><strong>Online booking and payment</strong> through Paystack. Guests can pay by card, bank transfer, USSD or OPay.</span></li>
+    <li><span><strong>Email confirmations</strong> sent to the guest and to you for every booking.</span></li>
+    <li><span><strong>Your admin dashboard</strong> to see all bookings, guest details and payments, and to block dates yourself.</span></li>
+    <li><span><strong>Works on every phone</strong>, since most of your guests will find you from Instagram on mobile.</span></li>
+    <li><span><strong>WhatsApp button</strong> so guests with questions can still reach you directly.</span></li>
+  </ul>
+
+  <h3 style="margin-top:26px;">Not included</h3>
+  <p class="muted" style="margin-top:6px;">Anything below can be quoted separately if you want it later.</p>
+  <ul class="clean out">
+    <li><span>A mobile app for the App Store or Play Store</span></li>
+    <li><span>Listing apartments owned by other people</span></li>
+    <li><span>Social media management or paid adverts</span></li>
+    <li><span>New features added after the design is approved</span></li>
+  </ul>
+</section>
+
+<section>
+  <span class="num">02</span>
+  <h2>Investment</h2>
+  <div class="price">₦500,000</div>
+  <p class="muted">Total for the full build. No extra charges for anything listed above. Choose how you'd like to pay:</p>
+  <div class="choices">
+    <label class="choice">
+      <input type="radio" name="plan" value="full" checked>
+      <div class="top"><h3>Pay in full <span class="pill">Bonus</span></h3><span class="cost">₦500,000 once</span></div>
+      <p class="note" style="margin:6px 0 0;">Paid before work begins. <strong style="color:var(--text);">Your first month of the care plan is free.</strong></p>
+    </label>
+    <label class="choice">
+      <input type="radio" name="plan" value="split">
+      <div class="top"><h3>Pay in two parts</h3><span class="cost">₦350,000 + ₦150,000</span></div>
+      <p class="note" style="margin:6px 0 0;">₦350,000 (70%) to start, and ₦150,000 (30%) at launch.</p>
+    </label>
+  </div>
+  <p style="margin-top:16px;"><strong>30 days of free fixes after launch.</strong> If anything doesn't work as agreed in the first month, we fix it at no cost.</p>
+</section>
+
+<section>
+  <span class="num">03</span>
+  <h2>Timeline: 4 weeks</h2>
+  <div class="weeks">
+    <div class="week"><span>Week 1</span><div>Design and apartment pages</div></div>
+    <div class="week"><span>Week 2</span><div>Availability calendar and booking flow</div></div>
+    <div class="week"><span>Week 3</span><div>Paystack payments, email confirmations and your dashboard. You get a working preview to test.</div></div>
+    <div class="week"><span>Week 4</span><div>Your feedback, final testing, and launch</div></div>
+  </div>
+</section>
+
+<section>
+  <span class="num">04</span>
+  <h2>Choose your database plan</h2>
+  <p>The database is where your bookings, dates and guest details are stored. We use Supabase. There are two options.</p>
+  <div class="choices">
+    <label class="choice">
+      <input type="radio" name="db" value="free" checked>
+      <div class="top"><h3>Free plan <span class="pill">Recommended to start</span></h3><span class="cost">₦0 monthly</span></div>
+      <ul>
+        <li>Room for thousands of bookings and up to 50,000 visitors a month, far more than you need</li>
+        <li>It goes to sleep after 7 days with no activity. We set up an automatic daily check during the build so it always stays awake.</li>
+        <li>No automatic backups. Weekly backups of your bookings are done as part of the care plan.</li>
+      </ul>
+    </label>
+    <label class="choice">
+      <input type="radio" name="db" value="pro">
+      <div class="top"><h3>Pro plan</h3><span class="cost">$25 monthly</span></div>
+      <ul>
+        <li>Never sleeps</li>
+        <li>Automatic daily backups</li>
+        <li>Much more room to grow</li>
+        <li>Billed in dollars to your card by Supabase</li>
+      </ul>
+    </label>
+  </div>
+  <p class="note muted" style="margin-top:14px;"><strong style="color:var(--text);">Our recommendation:</strong> start on the free plan, and move to Pro once bookings are coming in steadily. Switching takes a few minutes and nothing on the site changes.</p>
+</section>
+
+<section>
+  <span class="num">05</span>
+  <h2>Monthly care plan</h2>
+  <p>We keep your site running so you can focus on your guests. If anything breaks, you call us and it's fixed fast.</p>
+  <div class="choices">
+    <label class="choice">
+      <input type="radio" name="care" value="standard" checked>
+      <div class="top"><h3>Care plan</h3><span class="cost">₦40,000 monthly</span></div>
+      <ul>
+        <li>Anything that breaks fixed within 24 hours</li>
+        <li>Weekly backup of all your booking data</li>
+        <li>Keeping the database awake and checking that payments go through</li>
+        <li>Small updates: prices, photos, text and blocked dates</li>
+      </ul>
+    </label>
+    <label class="choice">
+      <input type="radio" name="care" value="custom">
+      <div class="top"><h3>Suggest a different amount</h3><span class="cost">Your offer</span></div>
+      <p class="note" style="margin:6px 0 0;">Tell us what works for your budget and we'll talk.</p>
+      <div class="inline-input">
+        <label class="q" for="careAmount" style="font-size:14px;">Your monthly offer (₦)</label>
+        <input type="number" id="careAmount" inputmode="numeric" min="0" step="1000" placeholder="e.g. 30000">
+      </div>
+    </label>
+    <label class="choice">
+      <input type="radio" name="care" value="none">
+      <div class="top"><h3>No care plan for now</h3><span class="cost">₦0</span></div>
+      <p class="note" style="margin:6px 0 0;">After the 30 free days, fixes and updates are charged one at a time.</p>
+    </label>
+  </div>
+</section>
+
+<section>
+  <span class="num">06</span>
+  <h2>Other running costs</h2>
+  <p>These are paid by you directly, not to us.</p>
+  <div class="rows">
+    <div class="row"><span>Domain name (e.g. nesluxuryapartments.com)</span><b>About ₦20,000 to ₦35,000 yearly</b></div>
+    <div class="row"><span>Website hosting</span><b>₦0</b></div>
+    <div class="row"><span>Paystack, per booking</span><b>1.5% + ₦100, max ₦2,000</b></div>
+  </div>
+  <p class="muted" style="margin-top:14px;">Example: on a ₦150,000 booking, Paystack keeps ₦2,000. The Paystack account is opened in your business name, so payments go straight into your bank account, usually the next working day.</p>
+</section>
+
+<section>
+  <span class="num">07</span>
+  <h2>A few questions for you</h2>
+  <p class="muted">Your answers help us build exactly what you need.</p>
+
+  <div class="field">
+    <label class="q" for="name">Your name</label>
+    <input type="text" id="name" placeholder="Full name">
+  </div>
+
+  <div class="field">
+    <label class="q" for="units">How many apartments will be on the site?</label>
+    <input type="number" id="units" inputmode="numeric" min="1" placeholder="e.g. 3">
+  </div>
+
+  <div class="field">
+    <span class="q" id="payLbl">How should guests pay when they book?</span>
+    <div class="radio-line" role="radiogroup" aria-labelledby="payLbl">
+      <label><input type="radio" name="pay" value="full" checked> Full payment</label>
+      <label><input type="radio" name="pay" value="deposit"> A deposit, balance later</label>
+    </div>
+    <div class="sub" id="depositBox">
+      <label class="hint" for="depositPct">Deposit percentage</label>
+      <input type="number" id="depositPct" inputmode="numeric" min="1" max="99" placeholder="e.g. 50">
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="q" for="cancel">What is your cancellation and refund policy?</label>
+    <textarea id="cancel" placeholder="e.g. Full refund if cancelled 48 hours before check in. No refund after that."></textarea>
+  </div>
+
+  <div class="field">
+    <label class="q" for="caution">Do you collect a caution fee? How much?</label>
+    <input type="text" id="caution" placeholder="e.g. ₦50,000, refunded after checkout">
+  </div>
+
+  <div class="field">
+    <label class="q" for="times">Check in and checkout times, and minimum stay</label>
+    <input type="text" id="times" placeholder="e.g. Check in 2pm, checkout 12pm, minimum 1 night">
+  </div>
+
+  <div class="field">
+    <span class="q" id="photoLbl">Photos and descriptions</span>
+    <div class="radio-line" role="radiogroup" aria-labelledby="photoLbl">
+      <label><input type="radio" name="photos" value="mine" checked> I'll provide them</label>
+      <label><input type="radio" name="photos" value="help"> I need help with them</label>
+    </div>
+  </div>
+
+  <div class="field">
+    <span class="q" id="domLbl">Domain name</span>
+    <div class="radio-line" role="radiogroup" aria-labelledby="domLbl">
+      <label><input type="radio" name="domain" value="have"> I already have one</label>
+      <label><input type="radio" name="domain" value="need" checked> I need one</label>
+    </div>
+    <div class="sub show" id="domBox">
+      <label class="hint" for="domName" id="domHint">Preferred name</label>
+      <input type="text" id="domName" placeholder="e.g. nesluxuryapartments.com">
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="q" for="extra">Anything else you'd like on the site?</label>
+    <textarea id="extra" placeholder="Optional"></textarea>
+  </div>
+
+  <div class="send-box">
+    <div>
+      <h3>Send your choices</h3>
+      <p class="muted" style="margin:6px 0 0;">This opens WhatsApp with your answers already typed out. Just press send. After that, we'll send you a short written agreement to confirm before work starts.</p>
+    </div>
+    <div class="totals">To start: <b id="startAmt">₦500,000</b><br>Monthly: <b id="monthly">₦40,000</b></div>
+    <div class="send-actions">
+      <a class="btn" id="waBtn" href="#" target="_blank" rel="noopener">Send on WhatsApp</a>
+      <button class="btn ghost" id="copyBtn" type="button">Copy my answers</button>
+    </div>
+    <div class="copied" id="copied" aria-live="polite"></div>
+    <p class="hint" style="margin:0;">WhatsApp: 0813 997 6947</p>
+  </div>
+</section>
+
+<footer>Prepared for NES Luxury Apartments, Jahi, Abuja. November 2026.</footer>
+</div>
+
+
+<script>
+(function () {
+  var PHONE = "2348139976947";
+  function val(id) { var el = document.getElementById(id); return el ? el.value.trim() : ""; }
+  function pick(name) { var el = document.querySelector('input[name="' + name + '"]:checked'); return el ? el.value : ""; }
+  function naira(n) { return "₦" + Number(n).toLocaleString("en-NG"); }
+
+  function monthlyText() {
+    var care = pick("care"), db = pick("db"), parts = [];
+    if (care === "standard") parts.push(naira(40000));
+    else if (care === "custom") { var a = val("careAmount"); parts.push(a ? naira(a) + " (offer)" : "Your offer"); }
+    if (db === "pro") parts.push("$25");
+    return parts.length ? parts.join(" + ") : "₦0";
+  }
+
+  function careText() {
+    var care = pick("care");
+    if (care === "standard") return "Care plan, ₦40,000 monthly";
+    if (care === "custom") { var a = val("careAmount"); return "Suggesting a different amount" + (a ? ": " + naira(a) + " monthly" : ""); }
+    return "No care plan for now";
+  }
+
+  function buildMessage() {
+    var pay = pick("pay") === "deposit" ? "Deposit" + (val("depositPct") ? " of " + val("depositPct") + "%" : "") + ", balance later" : "Full payment at booking";
+    var dom = pick("domain") === "have" ? "Already have one" + (val("domName") ? ": " + val("domName") : "") : "Need one" + (val("domName") ? ", preferred: " + val("domName") : "");
+    var lines = [
+      "Hello, here are my choices for the NES Luxury Apartments booking website.",
+      "",
+      "Name: " + (val("name") || "Not given"),
+      "Build: " + (pick("plan") === "split" ? "₦500,000 in two parts, ₦350,000 to start and ₦150,000 at launch" : "₦500,000 paid in full (first month of care plan free)"),
+      "Database: " + (pick("db") === "pro" ? "Pro plan, $25 monthly" : "Free plan to start"),
+      "Care: " + careText(),
+      "Monthly total: " + monthlyText(),
+      "",
+      "Apartments: " + (val("units") || "Not given"),
+      "Guest payment: " + pay,
+      "Cancellation policy: " + (val("cancel") || "Not given"),
+      "Caution fee: " + (val("caution") || "Not given"),
+      "Check in, checkout, minimum stay: " + (val("times") || "Not given"),
+      "Photos and descriptions: " + (pick("photos") === "help" ? "I need help" : "I'll provide them"),
+      "Domain: " + dom
+    ];
+    if (val("extra")) lines.push("Extra: " + val("extra"));
+    return lines.join("\n");
+  }
+
+  function update() {
+    var full = pick("plan") !== "split";
+    document.getElementById("startAmt").textContent = full ? "₦500,000" : "₦350,000";
+    var m = monthlyText();
+    if (full && pick("care") !== "none") m += ", first month free";
+    document.getElementById("monthly").textContent = m;
+    document.getElementById("depositBox").classList.toggle("show", pick("pay") === "deposit");
+    document.getElementById("domHint").textContent = pick("domain") === "have" ? "Your domain" : "Preferred name";
+    var url = "https://wa.me/" + PHONE + "?text=" + encodeURIComponent(buildMessage());
+    document.getElementById("waBtn").href = url;
+  }
+
+  document.addEventListener("input", update);
+  document.addEventListener("change", update);
+
+  document.getElementById("copyBtn").addEventListener("click", function () {
+    var msg = buildMessage(), out = document.getElementById("copied");
+    try {
+      navigator.clipboard.writeText(msg).then(function () {
+        out.textContent = "Copied. Paste it into WhatsApp and send it to 0813 997 6947.";
+      }, function () { out.textContent = "Couldn't copy here. Use the WhatsApp button instead."; });
+    } catch (e) { out.textContent = "Couldn't copy here. Use the WhatsApp button instead."; }
+  });
+
+  update();
+})();
+</script>
+</body>
+</html>
